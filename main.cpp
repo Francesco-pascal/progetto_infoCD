@@ -1,4 +1,7 @@
 #include <iostream>
+#include <fstream>
+#include <vector>
+#include <map>
 
 using namespace std;
 
@@ -20,12 +23,48 @@ void menu(char &scelta){
     cin>>scelta;
     cout<<"----------------------------------------------------------------------------------------------"<<endl;
 }
+
+struct dati{
+    string codice_corso;
+    string descrizione_corso;
+    string codice_materia;
+    string descrizione_materia;
+    string matricola_studente;
+    string cognome_studente;
+    string nome_studente;
+};
+
+
 int main()
 {
     char scelta;
     menu(scelta);
+
+    vector<dati> vet;
+
     while(scelta!='x'){
         switch(scelta){
+            case '0':{
+                ifstream fin ("corsi_studenti.csv");
+                string cc,dc,cm,dm,ms,cs,ns,labels;
+                getline(fin,labels);
+                while(!fin.eof()){
+                    getline(fin,cc,',');
+                    if(cc=="")  break;
+                    getline(fin,dc,',');
+                    getline(fin,cm,',');
+                    getline(fin,dm,',');
+                    getline(fin,ms,',');
+                    getline(fin,cs,',');
+                    getline(fin,ns);
+                    dati d {cc, dc, cm, dm, ms, cs, ns};
+                    cout<<cc<<":"<<dc<<":"<<cm<<":"<<dm<<":"<<ms<<":"<<cs<<":"<<ns<<":"<<endl;
+
+                }
+                fin.close();
+                break;
+            }
+
             case '1':{
 
                 break;
