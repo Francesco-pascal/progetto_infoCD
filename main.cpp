@@ -34,6 +34,9 @@ struct dati{
     string nome_studente;
 };
 
+void aggiungi(vector<dati> &v, dati elem){
+    v.push_back(elem);
+}
 
 int main()
 {
@@ -58,7 +61,8 @@ int main()
                     getline(fin,cs,',');
                     getline(fin,ns);
                     dati d {cc, dc, cm, dm, ms, cs, ns};
-                    cout<<cc<<":"<<dc<<":"<<cm<<":"<<dm<<":"<<ms<<":"<<cs<<":"<<ns<<":"<<endl;
+
+                    aggiungi(vet,d);
 
                 }
                 fin.close();
