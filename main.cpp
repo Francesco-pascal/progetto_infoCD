@@ -33,7 +33,24 @@ struct dati{
     string cognome_studente;
     string nome_studente;
 };
-
+void leggiCSV(vector<dati> &vet){
+    ifstream fin ("corsi_studenti.csv");
+    dati x;
+    string labels;
+    getline(fin,labels);
+    while(!fin.eof()){
+        getline(fin,x.codice_corso,',');
+        if(cc=="")  break;
+        getline(fin,dc,',');
+        getline(fin,cm,',');
+        getline(fin,dm,',');
+        getline(fin,ms,',');
+        getline(fin,cs,',');
+        getline(fin,ns);
+        v.push_back(elem);
+        }
+    fin.close();
+}
 void aggiungi(vector<dati> &v, dati elem){
     v.push_back(elem);
 }
@@ -48,24 +65,7 @@ int main()
     while(scelta!='x'){
         switch(scelta){
             case '0':{
-                ifstream fin ("corsi_studenti.csv");
-                string cc,dc,cm,dm,ms,cs,ns,labels;
-                getline(fin,labels);
-                while(!fin.eof()){
-                    getline(fin,cc,',');
-                    if(cc=="")  break;
-                    getline(fin,dc,',');
-                    getline(fin,cm,',');
-                    getline(fin,dm,',');
-                    getline(fin,ms,',');
-                    getline(fin,cs,',');
-                    getline(fin,ns);
-                    dati d {cc, dc, cm, dm, ms, cs, ns};
-
-                    aggiungi(vet,d);
-
-                }
-                fin.close();
+                leggiCSV(vet);
                 break;
             }
 
