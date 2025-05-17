@@ -5,7 +5,25 @@
 
 using namespace std;
 
-void menu(char &scelta){
+struct dati{
+    string codice_corso;
+    string descrizione_corso;
+    string codice_materia;
+    string descrizione_materia;
+    string matricola_studente;
+    string cognome_studente;
+    string nome_studente;
+};
+
+map<string,vector<string>> corsi_per_matricola;
+map<string,vector<string>> corsi_per_cognome;
+map<string,vector<string>> studenti_per_corso;
+map<string,vector<dati>> esami_per_corso;
+map<string,int> num_studenti_per_corso;
+map<string,int> num_materie_per_corso;
+map<string,vector<string>> materie_per_descrizione;
+
+void menu(){
     cout<<"=====Gestione universitaria====="<<endl;
     cout<<"0.Caricamento dati da un file"<<endl;
     cout<<"1.Cerca corsi di uno studente(matricola)"<<endl;
@@ -19,20 +37,8 @@ void menu(char &scelta){
     cout<<"9.Salva i dati su file"<<endl;
     cout<<"X.Esci"<<endl;
 
-    cout<<"Digita un'opzione: ";
-    cin>>scelta;
-    cout<<"----------------------------------------------------------------------------------------------"<<endl;
 }
 
-struct dati{
-    string codice_corso;
-    string descrizione_corso;
-    string codice_materia;
-    string descrizione_materia;
-    string matricola_studente;
-    string cognome_studente;
-    string nome_studente;
-};
 void leggiCSV(vector<dati> &vet){
     ifstream fin ("corsi_studenti.csv");
     dati x;
@@ -40,25 +46,32 @@ void leggiCSV(vector<dati> &vet){
     getline(fin,labels);
     while(!fin.eof()){
         getline(fin,x.codice_corso,',');
-        if(cc=="")  break;
-        getline(fin,dc,',');
-        getline(fin,cm,',');
-        getline(fin,dm,',');
-        getline(fin,ms,',');
-        getline(fin,cs,',');
-        getline(fin,ns);
-        v.push_back(elem);
-        }
+        if(x.codice_corso=="")  break;
+        getline(fin,x.descrizione_corso,',');
+        getline(fin,x.codice_materia,',');
+        getline(fin,x.descrizione_materia,',');
+        getline(fin,x.matricola_studente,',');
+        getline(fin,x.cognome_studente,',');
+        getline(fin,x.nome_studente);
+        vet.push_back(x);
+    }
     fin.close();
 }
-void aggiungi(vector<dati> &v, dati elem){
-    v.push_back(elem);
+
+
+void carica_map(vector<dati> vet){
+    for(int i=0; i<vet.size();i++){
+        corsi_per_matricola[vet[i].matricola_studente].push_back(vet[i].codice_corso);
+    }
 }
 
 int main()
 {
     char scelta;
-    menu(scelta);
+    menu();
+    cout<<"Digita un'opzione: ";
+    cin>>scelta;
+    cout<<"----------------------------------------------------------------------------------------------"<<endl;
 
     vector<dati> vet;
 
@@ -66,6 +79,7 @@ int main()
         switch(scelta){
             case '0':{
                 leggiCSV(vet);
+                carica_map(vet);
                 break;
             }
 
@@ -106,7 +120,10 @@ int main()
                 break;
             }
         }
-        menu(scelta);
+        menu();
+        cout<<"Digita un'opzione: ";
+        cin>>scelta;
+        cout<<"----------------------------------------------------------------------------------------------"<<endl;
     }
     return 0;
 }
