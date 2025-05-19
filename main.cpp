@@ -13,13 +13,14 @@ struct dati{
     string matricola_studente;
     string cognome_studente;
     string nome_studente;
+
 };
 
 map<string,vector<string>> corsi_per_matricola;
 map<string,vector<string>> corsi_per_cognome;
-map<string,vector<string>> studenti_per_corso;
+map<string,vector<dati>> studenti_per_corso; // oppure map<string,vector<dati>> studenti_per_corso; e sovrascrivere l'operatore cout<< in modo da caricare tutta la struct per poi dare in output solo quella che serve-
 map<string,vector<dati>> esami_per_corso;
-map<string,int> num_studenti_per_corso;
+map<string,int> num_studenti_per_corso; //map<string,map<string,int>> num_studenti_per_corso; però non so se si può
 map<string,int> num_materie_per_corso;
 map<string,vector<string>> materie_per_descrizione;
 
@@ -61,7 +62,11 @@ void leggiCSV(vector<dati> &vet){
 
 void carica_map(vector<dati> vet){
     for(int i=0; i<vet.size();i++){
-        corsi_per_matricola[vet[i].matricola_studente].push_back(vet[i].codice_corso);
+        corsi_per_matricola[vet[i].matricola_studente].push_back(vet[i].descrizione_corso);
+        corsi_per_cognome[vet[i].cognome_studente].push_back(vet[i].descrizione_corso);
+        studenti_per_corso[vet[i].descrizione_corso].push_back(vet[i]);
+        esami_per_corso[vet[i].descrizione_corso].push_back(vet[i]);
+
     }
 }
 
