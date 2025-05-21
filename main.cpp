@@ -5,24 +5,26 @@
 
 using namespace std;
 
-struct dati{
-    string codice_corso;
-    string descrizione_corso;
-    string codice_materia;
-    string descrizione_materia;
-    string matricola_studente;
-    string cognome_studente;
-    string nome_studente;
-
+struct studente{
+    string matricola_studente, cognome_studente, nome_studente;
 };
 
-map<string,vector<string>> corsi_per_matricola;
-map<string,vector<string>> corsi_per_cognome;
-map<string,vector<dati>> studenti_per_corso; // oppure map<string,vector<dati>> studenti_per_corso; e sovrascrivere l'operatore cout<< in modo da caricare tutta la struct per poi dare in output solo quella che serve-
+struct materia{
+    string codice_materia, descrizione_materia;
+};
+
+struct desc_corso{
+    string codice_corso, descrizione_corso;
+};
+
+map<string,string> corsi_per_matricola;
+/*map<string,vector<string>> corsi_per_cognome;
+map<string,vector<dati>> studenti_per_corso;
 map<string,vector<dati>> esami_per_corso;
-map<string,int> num_studenti_per_corso; //map<string,map<string,int>> num_studenti_per_corso; però non so se si può
+map<string,int> num_studenti_per_corso;
 map<string,int> num_materie_per_corso;
-map<string,vector<string>> materie_per_descrizione;
+map<string,vector<string>> materie_per_descrizione;*/
+
 
 void menu(){
     cout<<"=====Gestione universitaria====="<<endl;
@@ -40,35 +42,36 @@ void menu(){
 
 }
 
-void leggiCSV(vector<dati> &vet){
+void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
     ifstream fin ("corsi_studenti.csv");
-    dati x;
+
+    studente stu;
+    materia mat;
+    desc_corso desc;
     string labels;
+
     getline(fin,labels);
     while(!fin.eof()){
-        getline(fin,x.codice_corso,',');
-        if(x.codice_corso=="")  break;
-        getline(fin,x.descrizione_corso,',');
-        getline(fin,x.codice_materia,',');
-        getline(fin,x.descrizione_materia,',');
-        getline(fin,x.matricola_studente,',');
-        getline(fin,x.cognome_studente,',');
-        getline(fin,x.nome_studente);
-        vet.push_back(x);
+        getline(fin,desc.codice_corso,',');
+        if(desc.codice_corso=="")  break;
+        getline(fin,desc.descrizione_corso,',');
+        getline(fin,mat.codice_materia,',');
+        getline(fin,mat.descrizione_materia,',');
+        getline(fin,stu.matricola_studente,',');
+        getline(fin,stu.cognome_studente,',');
+        getline(fin,stu.nome_studente);
+        s.push_back(stu);
+        m.push_back(mat);
+        dc.push_back(desc);
+
+        corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso;
+
+
     }
     fin.close();
 }
 
 
-void carica_map(vector<dati> vet){
-    for(int i=0; i<vet.size();i++){
-        corsi_per_matricola[vet[i].matricola_studente].push_back(vet[i].descrizione_corso);
-        corsi_per_cognome[vet[i].cognome_studente].push_back(vet[i].descrizione_corso);
-        studenti_per_corso[vet[i].descrizione_corso].push_back(vet[i]);
-        esami_per_corso[vet[i].descrizione_corso].push_back(vet[i]);
-
-    }
-}
 
 int main()
 {
@@ -78,17 +81,23 @@ int main()
     cin>>scelta;
     cout<<"----------------------------------------------------------------------------------------------"<<endl;
 
-    vector<dati> vet;
+    vector<studente> stud;
+    vector<materia> mat;
+    vector<desc_corso> desc;
+
 
     while(scelta!='x'){
         switch(scelta){
             case '0':{
-                leggiCSV(vet);
-                carica_map(vet);
+                leggiCSV(stud,mat,desc);
                 break;
             }
 
             case '1':{
+                string m;
+                cout<<"Inserisci la matricola da cercare: ";
+                cin>>m;
+                cout<<m<<" : "<<corsi_per_matricola[m]<<endl<<endl;
 
                 break;
             }
