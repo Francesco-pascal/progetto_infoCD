@@ -19,8 +19,8 @@ struct desc_corso{
 
 map<string,string> corsi_per_matricola;
 map<string,string> corsi_per_cognome;
-/*map<string,vector<dati>> studenti_per_corso;
-map<string,vector<dati>> esami_per_corso;
+map<string,vector<studente>> studenti_per_corso;
+/*map<string,vector<dati>> esami_per_corso;
 map<string,int> num_studenti_per_corso;
 map<string,int> num_materie_per_corso;
 map<string,vector<string>> materie_per_descrizione;*/
@@ -67,6 +67,7 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
 
         corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso; //chiedere a chat se si può fare corsi_per_matricola[stu]=desc.descrizione_corso; in modo da fare entrambi i punti
         corsi_per_cognome[stu.cognome_studente]=desc.descrizione_corso;
+        studenti_per_corso[desc.codice_corso].push_back(stu);
 
 
     }
@@ -96,22 +97,28 @@ int main()
             }
 
             case '1':{
-                string m;
+                string matricola;
                 cout<<"Inserisci la matricola da cercare: ";
-                cin>>m;
-                cout<<m<<" : "<<corsi_per_matricola[m]<<endl<<endl;
+                cin>>matricola;
+                cout<<matricola<<" : "<<corsi_per_matricola[matricola]<<endl<<endl;
 
                 break;
             }
             case '2':{
-                string c;
+                string corso;
                 cout<<"Inserisci il cognome da cercare: ";
-                cin>>c;
-                cout<<c<<" : "<<corsi_per_cognome[c]<<endl<<endl;
+                cin>>corso;
+                cout<<corso<<" : "<<corsi_per_cognome[corso]<<endl<<endl;
                 break;
             }
             case '3':{
+                string corso;
+                cout<<"Inserisci il corso: ";
+                cin>>corso;
 
+                    for(auto elem : studenti_per_corso[corso]){
+                        cout<<corso<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
+                    }
                 break;
             }
             case '4':{
