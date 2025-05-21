@@ -18,8 +18,8 @@ struct desc_corso{
 };
 
 map<string,string> corsi_per_matricola;
-/*map<string,vector<string>> corsi_per_cognome;
-map<string,vector<dati>> studenti_per_corso;
+map<string,string> corsi_per_cognome;
+/*map<string,vector<dati>> studenti_per_corso;
 map<string,vector<dati>> esami_per_corso;
 map<string,int> num_studenti_per_corso;
 map<string,int> num_materie_per_corso;
@@ -60,11 +60,13 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
         getline(fin,stu.matricola_studente,',');
         getline(fin,stu.cognome_studente,',');
         getline(fin,stu.nome_studente);
+
         s.push_back(stu);
         m.push_back(mat);
         dc.push_back(desc);
 
-        corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso;
+        corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso; //chiedere a chat se si può fare corsi_per_matricola[stu]=desc.descrizione_corso; in modo da fare entrambi i punti
+        corsi_per_cognome[stu.cognome_studente]=desc.descrizione_corso;
 
 
     }
@@ -102,7 +104,10 @@ int main()
                 break;
             }
             case '2':{
-
+                string c;
+                cout<<"Inserisci il cognome da cercare: ";
+                cin>>c;
+                cout<<c<<" : "<<corsi_per_cognome[c]<<endl<<endl;
                 break;
             }
             case '3':{
