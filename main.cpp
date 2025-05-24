@@ -3,6 +3,7 @@
 #include <vector>
 #include <map>
 
+
 using namespace std;
 
 struct studente{
@@ -20,8 +21,8 @@ struct desc_corso{
 map<string,string> corsi_per_matricola;
 map<string,string> corsi_per_cognome;
 map<string,vector<studente>> studenti_per_corso;
-/*map<string,vector<dati>> esami_per_corso;
-map<string,int> num_studenti_per_corso;
+map<string,map<string,vector<studente>>> esami_per_corso;
+/*map<string,map<string,int>> num_studenti_per_corso;
 map<string,int> num_materie_per_corso;
 map<string,vector<string>> materie_per_descrizione;*/
 
@@ -40,6 +41,15 @@ void menu(){
     cout<<"9.Salva i dati su file"<<endl;
     cout<<"X.Esci"<<endl;
 
+}
+
+bool studenteGiaPresente(vector<studente> &v, studente &stu) {
+    for(auto& s : v) {
+        if(s.matricola_studente == stu.matricola_studente) {
+            return true;
+        }
+    }
+    return false;
 }
 
 void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
@@ -65,9 +75,18 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
         m.push_back(mat);
         dc.push_back(desc);
 
+        //punto 1
         corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso; //chiedere a chat se si può fare corsi_per_matricola[stu]=desc.descrizione_corso; in modo da fare entrambi i punti
+
+        //punto 2
         corsi_per_cognome[stu.cognome_studente]=desc.descrizione_corso;
-        studenti_per_corso[desc.codice_corso].push_back(stu);
+
+        //punto 3
+        if(!studenteGiaPresente(studenti_per_corso[desc.codice_corso], stu))    studenti_per_corso[desc.codice_corso].push_back(stu);
+
+        //punto 4
+        esami_per_corso[desc.codice_corso][mat.codice_materia].push_back(stu);
+
 
 
     }
@@ -122,7 +141,15 @@ int main()
                 break;
             }
             case '4':{
+                    string corso,esame;
+                    cout<<"Inserissci il corso: ";
+                    cin>>corso;
+                    cout<<"Inserisci l'esame del corso: ";
+                    cin>>esame;
 
+                    for(auto elem : esami_per_corso[corso][esame]){
+                        cout<<corso<<"  "<<esame<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
+                    }
                 break;
             }
             case '5':{
