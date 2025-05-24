@@ -21,7 +21,7 @@ struct desc_corso{
 map<string,string> corsi_per_matricola;
 map<string,string> corsi_per_cognome;
 map<string,vector<studente>> studenti_per_corso;
-map<string,map<string,vector<studente>>> esami_per_corso;
+map<string,vector<studente>> esami_per_corso;
 /*map<string,map<string,int>> num_studenti_per_corso;
 map<string,int> num_materie_per_corso;
 map<string,vector<string>> materie_per_descrizione;*/
@@ -85,7 +85,7 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc){
         if(!studenteGiaPresente(studenti_per_corso[desc.codice_corso], stu))    studenti_per_corso[desc.codice_corso].push_back(stu);
 
         //punto 4
-        esami_per_corso[desc.codice_corso][mat.codice_materia].push_back(stu);
+        esami_per_corso[mat.codice_materia].push_back(stu);
 
 
 
@@ -141,14 +141,12 @@ int main()
                 break;
             }
             case '4':{
-                    string corso,esame;
-                    cout<<"Inserissci il corso: ";
-                    cin>>corso;
+                    string esame;
                     cout<<"Inserisci l'esame del corso: ";
                     cin>>esame;
 
-                    for(auto elem : esami_per_corso[corso][esame]){
-                        cout<<corso<<"  "<<esame<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
+                    for(auto elem : esami_per_corso[esame]){
+                        cout<<esame<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
                     }
                 break;
             }
