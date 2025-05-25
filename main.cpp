@@ -219,7 +219,7 @@ int main()
             }
             case '3':{ // Elenca studenti iscritti ad un corso
                 string corso;
-                cout<<"Inserisci il corso: ";
+                cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
 
@@ -243,7 +243,7 @@ int main()
             }
             case '5':{ // Conta studenti per corso
                 string corso;
-                cout<<"Inserisci il corso: ";
+                cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
 
@@ -252,7 +252,7 @@ int main()
             }
             case '6':{ // Conta materie per corso
                 string corso;
-                cout<<"Inserisci il corso: ";
+                cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
 
