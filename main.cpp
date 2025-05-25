@@ -4,20 +4,25 @@
 #include <map>
 
 
+
 using namespace std;
 
+// Struttura che rappresenta uno studente
 struct studente{
     string matricola_studente, cognome_studente, nome_studente;
 };
 
+// Struttura che rappresenta una materia
 struct materia{
     string codice_materia, descrizione_materia;
 };
 
+// Struttura che rappresenta un corso
 struct desc_corso{
     string codice_corso, descrizione_corso;
 };
 
+// Struttura per legare insieme uno studente, una materia e un corso
 struct descrizione {
     string matricola_studente;
     string codice_materia;
@@ -25,12 +30,13 @@ struct descrizione {
     string descrizione_corso;
 };
 
+// Strutture dati per supportare le varie ricerche richieste
 map<string,string> corsi_per_matricola;
 map<string,vector<desc_corso>> corsi_per_cognome;
 map<string,vector<studente>> studenti_per_corso;
 map<string,vector<materia>> esami_per_corso;
 
-
+// Funzione per visualizzare il menu
 void menu(){
     cout<<"==============Gestione universitaria=============="<<endl;
     cout<<"=                                                ="<<endl;
@@ -50,6 +56,7 @@ void menu(){
 
 }
 
+// Controlla se uno studente è già presente in una lista
 bool studenteGiaPresente(vector<studente> v, studente stu) {
     for(auto &elem : v) {
         if(elem.matricola_studente == stu.matricola_studente) {
@@ -59,6 +66,7 @@ bool studenteGiaPresente(vector<studente> v, studente stu) {
     return false;
 }
 
+// Controlla se una materia è già presente in una lista
 bool materiaGiaPresente(vector<materia> v, materia mat) {
     for(auto &elem : v) {
         if(elem.descrizione_materia == mat.descrizione_materia) {
@@ -68,6 +76,7 @@ bool materiaGiaPresente(vector<materia> v, materia mat) {
     return false;
 }
 
+// Controlla se un corso è già presente in una lista
 bool corsoGiaPresente(vector<desc_corso> v, desc_corso c) {
     for (auto &elem : v) {
         if (elem.codice_corso == c.codice_corso) {
@@ -77,6 +86,7 @@ bool corsoGiaPresente(vector<desc_corso> v, desc_corso c) {
     return false;
 }
 
+// Legge i dati dal file CSV e popola le strutture dati
 void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, vector<descrizione> &de){
     ifstream fin ("corsi_studenti.csv");
 
@@ -101,6 +111,7 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, v
         getline(fin,stu.cognome_studente,',');
         getline(fin,stu.nome_studente);
 
+        // Inserisce i dati nelle rispettive strutture
         s.push_back(stu);
         m.push_back(mat);
         dc.push_back(desc);
@@ -123,6 +134,7 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, v
     fin.close();
 }
 
+// Converte una stringa in minuscolo
 string toLower(string s) {
     for (char &c : s){
         c = tolower(c);
@@ -130,6 +142,7 @@ string toLower(string s) {
     return s;
 }
 
+// Converte una stringa in maiuscolo
 string toUpper(string s) {
     for (char &c : s){
         c = toupper(c);
@@ -137,6 +150,7 @@ string toUpper(string s) {
     return s;
 }
 
+// Controlla se una matricola è già presente
 bool controllo_matricola(vector<studente> &stud, string matricola){
     bool esiste = false;
     for (auto &elem : stud) {
@@ -148,6 +162,7 @@ bool controllo_matricola(vector<studente> &stud, string matricola){
     return esiste;
 }
 
+// Verifica se una materia esiste
 void materia_trovata(string &cc, string &dc, bool &m, vector<descrizione> d, string cod){
     m=false;
     cc="";
@@ -179,12 +194,12 @@ int main()
 
     while(scelta!='x' and scelta!='X'){
         switch(scelta){
-            case '0':{
+            case '0':{  // Caricamento dati da file
                 leggiCSV(stud,mat,desc,d);
                 break;
             }
 
-            case '1':{
+            case '1':{ // Cerca corsi per matricola
                 string matricola;
                 cout<<"Inserisci la matricola da cercare: ";
                 cin>>matricola;
@@ -192,7 +207,7 @@ int main()
 
                 break;
             }
-            case '2':{
+            case '2':{ // Cerca corsi per cognome
                 string cognome;
                 cout<<"Inserisci il cognome da cercare: ";
                 cin>>cognome;
@@ -202,7 +217,7 @@ int main()
 
                 break;
             }
-            case '3':{
+            case '3':{ // Elenca studenti iscritti ad un corso
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
@@ -213,7 +228,7 @@ int main()
                     }
                 break;
             }
-            case '4':{
+            case '4':{ // Stampa dati esami di un corso
                 string corso;
                 cout<<"Inserisci il codice del corso: ";
                 cin>>corso;
@@ -226,7 +241,7 @@ int main()
                 }
                 break;
             }
-            case '5':{
+            case '5':{ // Conta studenti per corso
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
@@ -235,7 +250,7 @@ int main()
                 cout<<"il corso di "<<corso<<" ha "<<studenti_per_corso[corso].size()<<" studenti "<<endl;
                 break;
             }
-            case '6':{
+            case '6':{ // Conta materie per corso
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
@@ -245,7 +260,7 @@ int main()
                 break;
             }
 
-            case '7':{
+            case '7':{ // Cerca materia per descrizione
                 string str;
                 cout<<"Inserisci un testo "<<endl;
                 cin>>str;
@@ -259,7 +274,7 @@ int main()
                 break;
             }
 
-            case '8': {
+            case '8': { // Inserisci nuovo studente
                 string matricola, nome, cognome, codice_materia, desc_materia;
 
                 cout << "Inserisci matricola: ";
@@ -325,7 +340,7 @@ int main()
 
                 break;
             }
-            case '9':{
+            case '9':{ // Salva i dati su file
                 ofstream fout("output.csv");
                 fout<<"codice_corso,descrizione_corso,codice_materia,descrizione_materia,matricola_studente,cognome_studente,nome_studente"<<endl;
                 for(int i=0; i<stud.size(); i++){
