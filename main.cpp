@@ -123,6 +123,14 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, v
     fin.close();
 }
 
+string toLower(string s) {
+    for (char c : s){
+        c = tolower(c);
+    }
+    return s;
+}
+
+
 int main()
 {
     char scelta;
@@ -135,7 +143,6 @@ int main()
     vector<materia> mat;
     vector<desc_corso> desc;
     vector<descrizione>d;
-
 
     while(scelta!='x' and scelta!='X'){
         switch(scelta){
@@ -200,6 +207,15 @@ int main()
             }
 
             case '7':{
+                string str;
+                cout<<"Inserisci un testo "<<endl;
+                cin>>str;
+                str=toLower(str);
+                for(auto elem : mat){
+                    if(toLower(elem.descrizione_materia).find(str)!=string::npos){
+                        cout<<elem.descrizione_materia<<endl;
+                    }
+                }
 
                 break;
             }
@@ -278,7 +294,12 @@ int main()
                 break;
             }
             case '9':{
-
+                ofstream fout("output.csv");
+                fout<<"codice_corso,descrizione_corso,codice_materia,descrizione_materia,matricola_studente,cognome_studente,nome_studente"<<endl;
+                for(int i=0; i<stud.size(); i++){
+                    fout<<desc[i].codice_corso<<","<<desc[i].descrizione_corso<<","<<mat[i].codice_materia<<","<<mat[i].descrizione_materia<<","<<stud[i].matricola_studente<<","<<stud[i].cognome_studente<<","<<stud[i].nome_studente<<endl;
+                }
+                fout.close();
                 break;
             }
         }
