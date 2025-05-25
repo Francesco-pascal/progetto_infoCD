@@ -26,7 +26,7 @@ struct descrizione {
 };
 
 map<string,string> corsi_per_matricola;
-map<string,vector<string>> corsi_per_cognome;
+map<string,vector<desc_corso>> corsi_per_cognome;
 map<string,vector<studente>> studenti_per_corso;
 map<string,vector<materia>> esami_per_corso;
 
@@ -51,7 +51,7 @@ void menu(){
 }
 
 bool studenteGiaPresente(vector<studente> v, studente stu) {
-    for(auto elem : v) {
+    for(auto &elem : v) {
         if(elem.matricola_studente == stu.matricola_studente) {
             return true;
         }
@@ -60,7 +60,7 @@ bool studenteGiaPresente(vector<studente> v, studente stu) {
 }
 
 bool materiaGiaPresente(vector<materia> v, materia mat) {
-    for(auto elem : v) {
+    for(auto &elem : v) {
         if(elem.descrizione_materia == mat.descrizione_materia) {
             return true;
         }
@@ -68,9 +68,9 @@ bool materiaGiaPresente(vector<materia> v, materia mat) {
     return false;
 }
 
-bool corsoGiaPresente(vector<string> v, const string codice_corso) {
+bool corsoGiaPresente(vector<desc_corso> v, desc_corso c) {
     for (auto &elem : v) {
-        if (elem == codice_corso) {
+        if (elem.codice_corso == c.codice_corso) {
             return true;
         }
     }
@@ -108,10 +108,10 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, v
 
 
         //punto 1
-        corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso; //chiedere a chat se si può fare corsi_per_matricola[stu]=desc.descrizione_corso; in modo da fare entrambi i punti
+        corsi_per_matricola[stu.matricola_studente]=desc.descrizione_corso;
 
         //punto 2
-        if(!corsoGiaPresente(corsi_per_cognome[stu.cognome_studente], desc.codice_corso))    corsi_per_cognome[stu.cognome_studente].push_back(desc.codice_corso);
+        if(!corsoGiaPresente(corsi_per_cognome[stu.cognome_studente], desc))    corsi_per_cognome[stu.cognome_studente].push_back(desc);
 
         //punto 3
         if(!studenteGiaPresente(studenti_per_corso[desc.codice_corso], stu))    studenti_per_corso[desc.codice_corso].push_back(stu);
@@ -124,10 +124,43 @@ void leggiCSV(vector<studente> &s, vector<materia> &m, vector<desc_corso> &dc, v
 }
 
 string toLower(string s) {
-    for (char c : s){
+    for (char &c : s){
         c = tolower(c);
     }
     return s;
+}
+
+string toUpper(string s) {
+    for (char &c : s){
+        c = toupper(c);
+    }
+    return s;
+}
+
+bool controllo_matricola(vector<studente> &stud, string matricola){
+    bool esiste = false;
+    for (auto &elem : stud) {
+        if (elem.matricola_studente == matricola) {
+            esiste = true;
+            break;
+        }
+    }
+    return esiste;
+}
+
+void materia_trovata(string &cc, string &dc, bool &m, vector<descrizione> d, string cod){
+    m=false;
+    cc="";
+    dc="";
+    for (auto &elem : d) {
+        if (elem.codice_materia==cod) {
+            cc=elem.codice_corso;
+            dc=elem.descrizione_corso;
+            m=true;
+            break;
+        }
+    }
+
 }
 
 
@@ -160,11 +193,11 @@ int main()
                 break;
             }
             case '2':{
-                string corso;
+                string cognome;
                 cout<<"Inserisci il cognome da cercare: ";
-                cin>>corso;
-                for(auto elem : corsi_per_cognome[corso]){
-                   cout<<corso<<" : "<<elem<<endl;
+                cin>>cognome;
+                for(auto elem : corsi_per_cognome[cognome]){
+                   cout<<cognome<<" : "<<elem.descrizione_corso<<endl;
                 }
 
                 break;
@@ -173,6 +206,7 @@ int main()
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
+                corso=toUpper(corso);
 
                     for(auto elem : studenti_per_corso[corso]){
                         cout<<corso<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
@@ -181,11 +215,14 @@ int main()
             }
             case '4':{
                 string corso;
-                cout<<"Inserisci l'esame del corso: ";
+                cout<<"Inserisci il codice del corso: ";
                 cin>>corso;
+                corso=toUpper(corso);
 
-                for(auto elem : esami_per_corso[corso]){
-                    cout<<corso<<" : "<< elem.descrizione_materia << endl;
+                for (int i = 0; i < desc.size(); i++) {
+                    if (desc[i].codice_corso == corso) {
+                        cout << desc[i].codice_corso<<","<< desc[i].descrizione_corso<<","<< mat[i].codice_materia<<","<< mat[i].descrizione_materia<<","<< stud[i].matricola_studente<<","<< stud[i].cognome_studente<<","<< stud[i].nome_studente<<endl;
+                    }
                 }
                 break;
             }
@@ -193,6 +230,7 @@ int main()
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
+                corso=toUpper(corso);
 
                 cout<<"il corso di "<<corso<<" ha "<<studenti_per_corso[corso].size()<<" studenti "<<endl;
                 break;
@@ -201,6 +239,7 @@ int main()
                 string corso;
                 cout<<"Inserisci il corso: ";
                 cin>>corso;
+                corso=toUpper(corso);
 
                 cout<<"Il corso di "<<corso<<" ha "<<esami_per_corso[corso].size()<<" corsi "<<endl;
                 break;
@@ -226,18 +265,10 @@ int main()
                 cout << "Inserisci matricola: ";
                 cin >> matricola;
 
-                // Verifica che la matricola non sia già presente
-                bool esiste = false;
-                for (auto elem : stud) {
-                    if (elem.matricola_studente == matricola) {
-                        esiste = true;
-                        break;
-                    }
-                }
-
-                if(esiste==true) {
-                    cout << "Studente gia' esistente con questa matricola" << endl;
-                    break;
+                //verifica che non ci sia già questa matricola
+                while(controllo_matricola(stud,matricola)==true) {
+                    cout << "Studente gia' esistente con questa matricola, ridigita:" << endl;
+                    cin >> matricola;
                 }
 
                 cout << "Inserisci nome: ";
@@ -246,26 +277,26 @@ int main()
                 cin >> cognome;
                 cout << "Inserisci codice materia: ";
                 cin >> codice_materia;
+                codice_materia=toUpper(codice_materia);
                 cout << "Descrizione materia: ";
                 cin >> desc_materia;
 
                 // Verifica che la materia esista
-                bool materia_trovata=false;
-                string codice_corso_associato="";
-                string descrizione_corso_associato="";
+                bool materia_trov;
+                string codice_corso_associato;
+                string descrizione_corso_associato;
 
-                for (auto elem : d) {
-                    if (elem.codice_materia==codice_materia) {
-                        codice_corso_associato=elem.codice_corso;
-                        descrizione_corso_associato = elem.descrizione_corso;
-                        materia_trovata=true;
-                        break;
-                    }
-                }
+                materia_trovata(codice_corso_associato,descrizione_corso_associato,materia_trov,d, codice_materia);
 
-                if (materia_trovata==false) {
-                    cout << "Codice materia non trovato nei corsi." << endl;
-                    break;
+                while(materia_trov==false) {
+                    cout<<"Codice materia non trovato nei corsi"<<endl;
+                    cout << "Inserisci codice materia: ";
+                    cin >> codice_materia;
+                    codice_materia=toUpper(codice_materia);
+                    cout << "Descrizione materia: ";
+                    cin >> desc_materia;
+                    materia_trovata(codice_corso_associato,descrizione_corso_associato,materia_trov,d, codice_materia);
+
                 }
 
                 // Aggiunta dello studente
@@ -279,11 +310,12 @@ int main()
 
                 studente box_s={matricola, cognome, nome};
                 materia box_m={codice_materia,desc_materia};
+                desc_corso box_ds={codice_corso_associato, descrizione_corso_associato};
 
                 //ricarica mappe
                 corsi_per_matricola[matricola]=descrizione_corso_associato;
 
-                if(!corsoGiaPresente(corsi_per_cognome[cognome], codice_corso_associato))    corsi_per_cognome[cognome].push_back(codice_corso_associato);
+                if(!corsoGiaPresente(corsi_per_cognome[cognome], box_ds))    corsi_per_cognome[cognome].push_back(box_ds);
 
                 if(!studenteGiaPresente(studenti_per_corso[codice_corso_associato], box_s))    studenti_per_corso[codice_corso_associato].push_back(box_s);
 
