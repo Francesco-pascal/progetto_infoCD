@@ -150,18 +150,6 @@ string toUpper(string s) {
     return s;
 }
 
-// Controlla se una matricola è già presente
-bool controllo_matricola(vector<studente> &stud, string matricola){
-    bool esiste = false;
-    for (auto &elem : stud) {
-        if (elem.matricola_studente == matricola) {
-            esiste = true;
-            break;
-        }
-    }
-    return esiste;
-}
-
 // Verifica se una materia esiste
 void materia_trovata(string &cc, string &dc, bool &m, vector<descrizione> d, string cod){
     m=false;
@@ -275,21 +263,22 @@ int main()
             }
 
             case '8': { // Inserisci nuovo studente
-                string matricola, nome, cognome, codice_materia, desc_materia;
+                string codice_materia, desc_materia;
+                studente matricola;
 
                 cout << "Inserisci matricola: ";
-                cin >> matricola;
+                cin >> matricola.matricola_studente;
 
                 //verifica che non ci sia già questa matricola
-                while(controllo_matricola(stud,matricola)==true) {
+                while(studenteGiaPresente(stud,matricola)==true) {
                     cout << "Studente gia' esistente con questa matricola, ridigita:" << endl;
-                    cin >> matricola;
+                    cin >> matricola.matricola_studente;
                 }
 
                 cout << "Inserisci nome: ";
-                cin >> nome;
+                cin >> matricola.nome_studente;
                 cout << "Inserisci cognome: ";
-                cin >> cognome;
+                cin >> matricola.cognome_studente;
                 cout << "Inserisci codice materia: ";
                 cin >> codice_materia;
                 codice_materia=toUpper(codice_materia);
@@ -315,7 +304,7 @@ int main()
                 }
 
                 // Aggiunta dello studente
-                stud.push_back({matricola, cognome, nome});
+                stud.push_back({matricola.matricola_studente, matricola.cognome_studente, matricola.nome_studente});
 
                 // Aggiunta della descrizione
                 desc.push_back({codice_corso_associato, descrizione_corso_associato});
@@ -323,14 +312,14 @@ int main()
                 //aggiunta della materia
                 mat.push_back({codice_materia,desc_materia});
 
-                studente box_s={matricola, cognome, nome};
+                studente box_s={matricola.matricola_studente, matricola.cognome_studente, matricola.nome_studente};
                 materia box_m={codice_materia,desc_materia};
                 desc_corso box_ds={codice_corso_associato, descrizione_corso_associato};
 
                 //ricarica mappe
-                corsi_per_matricola[matricola]=descrizione_corso_associato;
+                corsi_per_matricola[matricola.matricola_studente]=descrizione_corso_associato;
 
-                if(!corsoGiaPresente(corsi_per_cognome[cognome], box_ds))    corsi_per_cognome[cognome].push_back(box_ds);
+                if(!corsoGiaPresente(corsi_per_cognome[matricola.cognome_studente], box_ds))    corsi_per_cognome[matricola.cognome_studente].push_back(box_ds);
 
                 if(!studenteGiaPresente(studenti_per_corso[codice_corso_associato], box_s))    studenti_per_corso[codice_corso_associato].push_back(box_s);
 
