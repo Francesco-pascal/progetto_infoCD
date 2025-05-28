@@ -188,17 +188,46 @@ int main()
             }
 
             case '1':{ // Cerca corsi per matricola
-                string matricola;
+                studente matricola;
                 cout<<"Inserisci la matricola da cercare: ";
-                cin>>matricola;
-                cout<<matricola<<" : "<<corsi_per_matricola[matricola]<<endl<<endl;
+                cin>>matricola.matricola_studente;
+                while(!studenteGiaPresente(stud,matricola)){
+                    cout<<"Matricola inesistente, reinserisci la matricola da cercare: ";
+                    cin>>matricola.matricola_studente;
+                }
+
+                cout<<matricola.matricola_studente<<" : "<<corsi_per_matricola[matricola.matricola_studente]<<endl<<endl;
 
                 break;
             }
             case '2':{ // Cerca corsi per cognome
                 string cognome;
+                bool controllo=false;
                 cout<<"Inserisci il cognome da cercare: ";
                 cin>>cognome;
+
+                //controllo sull'input
+                for(auto elem : stud){
+                    if(elem.cognome_studente == cognome) {
+                        controllo=true;
+                        break;
+                    }
+                }
+
+                while(controllo==false){
+                    cout<<"Cognome inesistente, reinserisci il cognome da cercare: ";
+                    cin>>cognome;
+                    controllo=false;
+                    //controllo sull'input
+                    for(auto elem : stud){
+                        if(elem.cognome_studente == cognome) {
+                            controllo=true;
+                            break;
+                        }
+                    }
+                }
+
+
                 for(auto elem : corsi_per_cognome[cognome]){
                    cout<<cognome<<" : "<<elem.descrizione_corso<<endl;
                 }
@@ -210,8 +239,13 @@ int main()
                 cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
+                while(corso!="C001" and corso!="C002" and corso!="C003"){
+                    cout<<"Codice corso errato, reinserisci il codice corso: ";
+                    cin>>corso;
+                    corso=toUpper(corso);
+                }
 
-                    for(auto elem : studenti_per_corso[corso]){
+                for(auto elem : studenti_per_corso[corso]){
                         cout<<corso<<" : "<< elem.matricola_studente << " " << elem.cognome_studente << " " << elem.nome_studente << endl;
                     }
                 break;
@@ -221,6 +255,11 @@ int main()
                 cout<<"Inserisci il codice del corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
+                while(corso!="C001" and corso!="C002" and corso!="C003"){
+                    cout<<"Codice corso errato, reinserisci il codice corso: ";
+                    cin>>corso;
+                    corso=toUpper(corso);
+                }
 
                 for (int i = 0; i < desc.size(); i++) {
                     if (desc[i].codice_corso == corso) {
@@ -234,6 +273,11 @@ int main()
                 cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
+                while(corso!="C001" and corso!="C002" and corso!="C003"){
+                    cout<<"Codice corso errato, reinserisci il codice corso: ";
+                    cin>>corso;
+                    corso=toUpper(corso);
+                }
 
                 cout<<"il corso di "<<corso<<" ha "<<studenti_per_corso[corso].size()<<" studenti "<<endl;
                 break;
@@ -243,6 +287,11 @@ int main()
                 cout<<"Inserisci il codice corso: ";
                 cin>>corso;
                 corso=toUpper(corso);
+                while(corso!="C001" and corso!="C002" and corso!="C003"){
+                    cout<<"Codice corso errato, reinserisci il codice corso: ";
+                    cin>>corso;
+                    corso=toUpper(corso);
+                }
 
                 cout<<"Il corso di "<<corso<<" ha "<<esami_per_corso[corso].size()<<" corsi "<<endl;
                 break;
